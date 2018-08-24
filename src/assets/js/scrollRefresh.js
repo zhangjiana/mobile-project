@@ -13,8 +13,9 @@ function pull(el,binding,vnode){
 };
 pull.prototype={
     scroller:function(){
-        // 判断到达底部条件
-        if (this.getScrollTop() == (this.getElmHeight() - this.getDocHeight()) && this.vnode.context[this.flagEX]) {
+        let eleHeight = this.getElmHeight() - (this.getScrollTop() + this.getDocHeight());
+        // 判断到达底部条件  this.distance 达到底部前，就触发
+        if ((eleHeight < this.distance) && this.vnode.context[this.flagEX]) {
             console.log('loading')
             this.binding.value();
         } else if (this.getScrollTop() >= (this.getElmHeight() - this.getDocHeight())){
@@ -28,7 +29,7 @@ pull.prototype={
     },
     // 滚动条高度
     getScrollTop() {
-       return this.el === window ? document.documentElement.scrollTop || document.body.scrollTop : Math.abs(this.el.getBoundingClientRect().top);
+       return this.el === window ? document.documentElement.scrollTop || document.body.scrollTop : Math.ceil(Math.abs(this.el.getBoundingClientRect().top));
     },
     // 可视窗口高度
     getDocHeight() {
@@ -44,7 +45,7 @@ export default {
             },
             unbind: function (el) {
                 window.removeEventListener('scroll',()=>{
-                    
+
                 })
             }
         });

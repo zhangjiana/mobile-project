@@ -36,15 +36,17 @@
 				this.flag = true;
 			},
 			loadMore() {
+				this.flag = false;	
 				if (this.count < 3) {
 					setTimeout(()=> {
 						this.count++
 						for(let i = 0; i < 7; i++) {
 							this.list.push(i)
 						};
+						this.flag = true;
 					}, 1000)
 				} else {
-					this.flag = false;	
+					this.flag = false;
 				}
 			},
 			upLoadMore() {
