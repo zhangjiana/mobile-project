@@ -9,6 +9,7 @@ function pull(el,binding,type,vnode){
     this.flagEX = this.el.getAttribute('pull-flag') || true;
     this.distance = this.el.getAttribute('pull-distance') || 30;
     this.pullText = this.el.getAttribute('pull-text') || '释放刷新';
+    this.scrollFlag = true;
     this.el.addEventListener("touchstart",(e)=>{
         start = e.changedTouches[0].pageY;
         this.pullLength = 0;
@@ -23,9 +24,18 @@ function pull(el,binding,type,vnode){
     },false);
     this.el.addEventListener("touchmove",(e)=>{
         this.pullLength = e.changedTouches[0].pageY - start;
+        this.elHeight = this.el.clientHeight;
+        this.docHeight = document.documentElement.clientHeight;
+        this.docScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         // 上拉或者下滑，有个限制，超过了则重置
         if (this.pullLength > 80) {
             this.pullLength = 80;
+        }
+        if (this.docScrollTop == 0 && this.pullLength>10) {
+            e.preventDefault();
+        }
+        if ((this.docScrollTop+this.docHeight) >= this.elHeight &&  this.pullLength<-10) {
+            e.preventDefault();
         }
         if (this.pullLength < -80) {
             this.pullLength = -80;
@@ -51,6 +61,7 @@ function pull(el,binding,type,vnode){
         this.docScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         this.el.style.transform = `translateY(0)`; 
         this.el.style.transition = 'transform ease .6s';  
+        console.log(this.pullLength);
         if (this.touchType === 'pull-up' && this.pullLength > 0) {
             this.pullUp(e);
         }
@@ -87,21 +98,11 @@ export default {
         Vue.directive("pull-up",{
             bind:function(el,binding,vnode){
                 new pull(el,binding,"pull-up",vnode);
-            },
-            unbind: function (el) {
-                el.removeEventListener('touchstart',()=>{})
-                el.removeEventListener('touchmove',()=>{})
-                el.removeEventListener('touchend',()=>{})
             }
         });
         Vue.directive("pull-down",{
             bind:function(el,binding,vnode){
                 new pull(el,binding,"pull-down",vnode);
-            },
-            unbind: function (el) {
-                el.removeEventListener('touchstart',()=>{console.log('start')})
-                el.removeEventListener('touchmove',()=>{console.log('move')})
-                el.removeEventListener('touchend',()=>{console.log('end')})
             }
         });
     }

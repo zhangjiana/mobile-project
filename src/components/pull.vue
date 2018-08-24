@@ -31,7 +31,9 @@
 		methods: {
 			tab(i) {
 				this.cur = i;
+				this.count = 0;
 				this.loadList();
+				this.flag = true;
 			},
 			loadMore() {
 				console.log('loading-上滑')
