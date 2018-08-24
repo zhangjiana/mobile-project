@@ -1,14 +1,14 @@
 <template>
 	<div id="app">
 		<div class="tab-wrap">
-			<div :class="{'active': cur==1}" @click="tab(1)">上滑刷新</div>
-			<div :class="{'active': cur==2}" @click="tab(2)">下拉刷新</div>
+			<div :class="{'active': cur==1}" @click="tab(1)">下拉刷新</div>
+			<div :class="{'active': cur==2}" @click="tab(2)">滚动刷新</div>
 		</div>
 			<!-- 页面内容 -->
-		<div v-if="cur==1" :key=1 class="pull-main" v-pull-down="loadMore" pull-flag="flag" pull-distance="30">
+		<div v-if="cur==1" :key=1 class="pull-main" v-pull-down="upLoadMore" pull-flag="flag" pull-distance="30" pull-text="下拉刷新">
 			<div class="main-list" v-for="item in list">{{item}}</div>
 		</div>
-		<div v-if="cur==2" :key=2 class="pull-main" v-pull-up="upLoad" pull-flag="flag" pull-distance="30" pull-text="下拉刷新">
+		<div v-if="cur==2" :key=2 class="pull-main" v-scroll-refresh="loadMore" pull-flag="flag" pull-distance="30">
 			<div class="main-list" v-for="item in list">{{item}}</div>
 		</div>
 	</div>
@@ -36,19 +36,18 @@
 				this.flag = true;
 			},
 			loadMore() {
-				console.log('loading-上滑')
 				if (this.count < 3) {
 					setTimeout(()=> {
 						this.count++
 						for(let i = 0; i < 7; i++) {
 							this.list.push(i)
 						};
-					}, 2000)
+					}, 1000)
 				} else {
 					this.flag = false;	
 				}
 			},
-			upLoad() {
+			upLoadMore() {
 				console.log('loading-下拉')
 				if (this.count < 3) {
 					setTimeout(()=> {
@@ -56,7 +55,7 @@
 						for(let i = 0; i < 10; i++) {
 							this.list.unshift(i)
 						};
-					}, 2000)
+					}, 1000)
 				} else {
 					this.flag = false;
 				}
